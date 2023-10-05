@@ -1,0 +1,85 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+<a href="{{ path('admin') }}">
+    <div class="close">
+        <i class="title bi bi-x"></i>
+    </div>
+</a>
+
+<div class="filters">
+    <div class="filter-box">
+        <form method="get" action="{{ path('admin_user', {'id': user.id}) }}">
+            <select name="filter" class="form-select" onchange="this.form.submit()">
+                <option value="all">All</option>
+                <option value="last_week" {% if app.request.query.get('filter') == 'last_week' %}selected{% endif %}>Last Week</option>
+                <option value="last_month" {% if app.request.query.get('filter') == 'last_month' %}selected{% endif %}>
+                    Last Month</option>
+                <option value="last_year" {% if app.request.query.get('filter') == 'last_year' %}selected{% endif %}>
+                    Last Year</option>
+            </select>
+        </form>
+    </div>
+
+    <div class="filter-box">
+
+        <form method="get" action="{{ path('admin_user', {'id': user.id}) }}">
+            <select name="department" class="form-select" onchange="this.form.submit()">
+                <option value="all">All Departments</option>
+                <option value="AV">AV</option>
+                <option value="IT">IT</option>
+                <option value="PI">PI</option>
+                <option value="Backoffice">Backoffice</option>
+            </select>
+        </form>
+
+    </div>
+
+</div>
+
+<div class="user-record">
+    <h3 class="text-center">{{ user.username }}</h3>
+
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Start Time</th>
+                <th>Duration</th>
+                <th>Description</th>
+                <th>Department</th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% set totalDuration = 0 %}
+            {% for workRecord in workRecords %}
+            <tr>
+                <td>{{ workRecord.startTime|date('d-m-Y H:i:s') }}</td>
+                <td>{{ workRecord.duration // 3600 }}h {{ (workRecord.duration % 3600) // 60 }}m</td>
+                <td>{{ workRecord.description }}</td>
+                <td>{{ workRecord.department }}</td>
+                <td>
+                    <a href="{{ path('edit-record', {'id': workRecord.id}) }}" class="btn btn-outline-success">
+                        <i class="bi bi-pencil-square"></i> Edit
+                    </a>
+                </td>
+                <td>
+                    <a href="{{ path('delete-record', {'id': workRecord.id}) }}" class="btn btn-outline-danger">
+                        <i class="bi bi-trash"></i> Delete
+                    </a>
+                </td>
+                {% set totalDuration = totalDuration + workRecord.duration %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <p class="text-center">Total: {{ totalDuration // 3600 }}h {{ (totalDuration % 3600) // 60 }}m</p>
+</div>
+
+<div class="export-box text-right">
+    <a href="{{ path('export_csv') }}" class="btn btn-primary"><i class="bi bi-download"></i> Export as CSV</a>
+</div>
+
+{% endblock %}

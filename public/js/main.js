@@ -1,0 +1,1 @@
+$(document).ready((function(){$(".timepicker").timepicker({timeFormat:"HH:mm",interval:30,dynamic:!1,dropdown:!0,scrollbar:!0}),setTimeout((function(){$(".alert-danger").fadeOut("slow")}),3e3)}));

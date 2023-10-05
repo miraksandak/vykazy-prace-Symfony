@@ -1,0 +1,37 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    {% if error %}
+        <div class="err-message">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+    {% endif %}
+
+<div class="login-page">
+
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-9 col-md-7 col-lg-4 mx-auto">
+        <div class="card border-0 shadow rounded-3 my-5">
+          <div class="card-body p-4 p-sm-5">
+            <h2 class="card-title text-center mb-5 fw-light fs-2">Výkazy práce</h2>
+            <form action="{{ path('app_login') }}" method="post">
+              <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="floatingInput" placeholder="Jméno" name="_username">
+                <label for="floatingInput">Jméno</label>
+              </div>
+              <div class="form-floating mb-3">
+                <input type="password" class="form-control" id="floatingPassword" placeholder="Heslo" name="_password">
+                <label for="floatingPassword">Heslo</label>
+              </div>
+
+              <div class="d-grid">
+                <button class="btn btn-success btn-login text-uppercase fw-bold" type="submit">Přihlásit se</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

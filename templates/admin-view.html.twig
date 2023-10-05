@@ -1,0 +1,88 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <a href="/">
+        <div class="close">
+            <i class="title bi bi-x"></i>
+        </div>
+    </a>
+
+    <h2 class="nadpis text-center">Přehled uživatelů</h2>
+
+    <div class="filter-box3">
+        <form method="get" action="{{ path('admin') }}">
+            <select name="filter" class="form-select" onchange="this.form.submit()">
+                <option value="all">All</option>
+                <option value="last_week" {% if selectedFilter == 'last_week' %}selected{% endif %}>Last Week</option>
+                <option value="last_month" {% if selectedFilter == 'last_month' %}selected{% endif %}>Last Month</option>
+                <option value="last_year" {% if selectedFilter == 'last_year' %}selected{% endif %}>Last Year</option>
+            </select>
+        </form>
+    </div>
+
+    <div class="users">
+        {% for user in users %}
+            {% set totalDuration = 0 %}
+            {% set userWorkRecords = workRecords[user.id] %}
+            {% for workRecord in userWorkRecords %}
+                {% set totalDuration = totalDuration + workRecord.duration %}
+            {% endfor %}
+            <div class="user-box">
+                <a href="{{ path('admin_user', {'id': user.id}) }}">
+                    <h4 class="username">{{ user.username }}</h4>
+                </a>
+                <p class="text-center">Total: {{ totalDuration // 3600 }}h {{ (totalDuration % 3600) // 60 }}m</p>
+            </div>
+        {% endfor %}
+    </div>
+
+<div class="chart">
+        <canvas id="userChart"></canvas>
+    </div>
+
+<script>
+    const usernames = [{% for user in users %}"{{ user.username }}",{% endfor %}];
+    const totalDurations = [{% for user in users %}
+        {% set totalDuration = 0 %}
+        {% set userWorkRecords = workRecords[user.id] %}
+        {% for workRecord in userWorkRecords %}
+            {% set totalDuration = totalDuration + workRecord.duration %}
+        {% endfor %}
+        {{ totalDuration }},
+    {% endfor %}];
+
+    const totalDurationsInHours = totalDurations.map(duration => (duration / 3600).toFixed(2));
+    const colors = ['rgba(75, 192, 192, 0.4)', 'rgba(54, 162, 235, 0.4)', 'rgba(255, 99, 132, 0.4)', 'rgba(255, 206, 86, 0.4)', 'rgba(61,144,82, 0.4)', 'rgba(95,111,242, 0.4)'];
+    const borders = ['rgba(75, 192, 192, 1)', 'rgba(54, 162, 235, 1)', 'rgba(255, 99, 132, 1)', 'rgba(255, 206, 86, 1)', 'rgba(61,144,82, 1)', 'rgba(95,111,242, 1)'];
+
+    const ctx = document.getElementById('userChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: usernames,
+            datasets: [{
+                label: 'Total Worked Hours',
+                data: totalDurationsInHours,
+                backgroundColor: colors,
+                borderColor: borders,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value, index, values) {
+                            return value + 'h';
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
+
+
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+
+    <a href="/">
+    <div class="close">
+    <i class="title bi bi-x"></i>
+    </div>
+    </a>
+    
+    <div class="success">
+
+        <h3>Záznam přidán</h3>
+
+        <div class="success-animation">
+            <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52"><circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none" />
+                <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" /></svg>
+            </div>
+
+    </div>
+      <a href="/">
+         <button class="btn btn-outline-success back-overview"><i class="bi bi-arrow-left"></i> &nbsp;Zpět na přehled</button>
+      </a>   
+
+{% endblock %}
